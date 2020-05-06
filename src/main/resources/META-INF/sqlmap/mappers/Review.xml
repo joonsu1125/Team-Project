@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Review">
+	<resultMap type="Review" id="ReviewResult">
+		<result property="rcode"		column="rcode"		/>
+		<result property="rcontent"		column="rcontent"	/>
+		<result property="rstar"		column="rstar"		/>
+		<result property="rrdate"		column="rrdate"		/>
+		<result property="rimage"		column="rimage"		/>
+		<result property="cid"			column="cid"		/>
+		<result property="pcode"		column="pcode"		/>
+	</resultMap>
+	<select id="cntReview" parameterType="String" resultType="int">
+		SELECT COUNT(*) CNT FROM REVIEW WHERE PCODE=#{pcode}
+	</select>
+	<select id="listReview" parameterType="Review" resultMap="ReviewResult">
+		SELECT * FROM (SELECT ROWNUM RN, A.* FROM 
+			(SELECT * FROM REVIEW WHERE PCODE=#{pcode} ORDER BY TO_NUMBER(RCODE) DESC)A) 
+			WHERE RN BETWEEN #{startrow} AND #{endrow}
+	</select>
+	<insert id="insertReview" parameterType="Review">
+		INSERT INTO REVIEW VALUES(REVIEW_SEQ.NEXTVAL, 
+			#{rcontent} , #{rstar}, SYSDATE, #{rimage}, #{cid}, #{pcode})
+	</insert>
+	<delete id="deleteReview" parameterType="String">
+		DELETE REVIEW WHERE RCODE=#{rcode}
+	</delete>
+	
+</mapper>

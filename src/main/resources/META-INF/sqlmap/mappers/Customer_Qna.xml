@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Customer_qna">
+	<resultMap type="Customer_qna" id="Customer_qna_Result">
+		<result property="cqcode"			column="cqcode"/>
+		<result property="cqtitle"			column="cqtitle"/>
+		<result property="cqcontent"		column="cqcontent"/>
+		<result property="cqrdate"			column="cqrdate"/>
+		<result property="cqgroup"			column="cqgroup"/>
+		<result property="cqstep"			column="cqstep"/>
+		<result property="cqindent"			column="cqindent"/>
+		<result property="cqhit"			column="cqhit"/>
+		<result property="cid"				column="cid"/>
+		<result property="aid"				column="aid"/>
+		<result property="cname"			column="cname"/>
+	</resultMap>
+	
+	<!-- 전체 글 갯수 가져오기 -->
+	<select id="totalCustomerQna" resultType="int">
+		SELECT COUNT(*) FROM CUSTOMER_QNA
+	</select>
+	
+	<!-- 글 목록 가져오기 (startrow, endrow) -->
+	<!-- <select id="customerQnaList" parameterType="Customer_qna" resultMap="Customer_qna_Result" >
+		SELECT * FROM (SELECT ROWNUM RN, A.* 
+    		FROM (SELECT * FROM CUSTOMER_QNA ORDER BY CQGROUP DESC, CQSTEP) A)
+		WHERE RN BETWEEN #{startrow} AND #{endrow}
+	</select> -->
+	<select id="customerQnaList" parameterType="Customer_qna" resultMap="Customer_qna_Result" >
+		SELECT * FROM (SELECT ROWNUM RN, A.* 
+    		FROM (SELECT Q.*, C.CNAME FROM CUSTOMER_QNA Q 
+    				LEFT OUTER JOIN CUSTOMER C ON ( Q.CID = C.CID) 
+    			ORDER BY CQGROUP DESC, CQSTEP) A)
+		WHERE RN BETWEEN #{startrow} AND #{endrow}
+	</select>
+	
+	<!-- 상세글 보기 (cqcode로 dto 가져오기) -->
+	<!-- <select id="getCustomerQnaDetail" parameterType="String" resultType="Customer_qna">
+		SELECT * FROM CUSTOMER_QNA WHERE CQCODE =  #{cqcode}
+	</select> -->
+	<select id="getCustomerQnaDetail" parameterType="String" resultType="Customer_qna">
+		SELECT Q.*, C.CNAME FROM CUSTOMER_QNA Q LEFT OUTER JOIN CUSTOMER C ON ( Q.CID = C.CID) WHERE CQCODE =  #{cqcode}
+	</select>
+	
+	<!-- 원글 쓰기 -->
+	<insert id="writeCustomerQna" parameterType="Customer_qna">
+	<!-- 고객이 글을 쓸경우 -->
+	<if test="cid != null and cid != ''">
+		INSERT INTO CUSTOMER_QNA(CQCODE, CQTITLE, CQCONTENT, CQRDATE, CQGROUP, CQSTEP, CQINDENT, CQHIT, CID, AID)
+	    	VALUES (CUSTOMER_QNA_SEQ.nextval, #{cqtitle}, #{cqcontent}, SYSDATE, CUSTOMER_QNA_SEQ.CURRVAL, 0, 0, 0, #{cid}, null)	
+	</if>
+	<!-- 관리자가 글을 쓸경우 -->
+	<if test="aid != null and aid != ''">
+		INSERT INTO CUSTOMER_QNA(CQCODE, CQTITLE, CQCONTENT, CQRDATE, CQGROUP, CQSTEP, CQINDENT, CQHIT, CID, AID)
+	    	VALUES (CUSTOMER_QNA_SEQ.nextval, #{cqtitle}, #{cqcontent}, SYSDATE, CUSTOMER_QNA_SEQ.CURRVAL, 0, 0, 0, null, #{aid})
+	</if>
+	</insert>
+	
+	<!-- 글 수정하기 -->
+	<update id="modifyCustomerQna" parameterType="Customer_qna">
+		UPDATE CUSTOMER_QNA SET 
+	        CQTITLE = #{cqtitle},
+	        CQCONTENT = #{cqcontent},
+	        CQRDATE = SYSDATE
+		WHERE CQCODE = #{cqcode}
+	</update>
+	
+	<!-- 조회수 올리기 -->
+	<update id="hitupCustomerQna" parameterType="String">
+		UPDATE CUSTOMER_QNA SET CQHIT = CQHIT + 1
+			WHERE CQCODE = #{cqcode}
+	</update>
+	
+	<!-- 답변글 달기전 stepA -->
+	<update id="replyStepACustomerQna" parameterType="Customer_qna">
+		UPDATE CUSTOMER_QNA SET CQSTEP = CQSTEP +1 WHERE CQGROUP = #{cqgroup} AND CQSTEP > 0
+	</update>
+	
+	<!-- 답변글 달기 -->
+	<insert id="replyCustomerQna" parameterType="Customer_qna">
+	<!-- 고객이 글을 쓸경우 -->
+	<if test="cid != null and cid != ''">
+		INSERT INTO CUSTOMER_QNA(CQCODE, CQTITLE, CQCONTENT, CQRDATE, CQGROUP, CQSTEP, CQINDENT, CQHIT, CID, AID)
+    		VALUES (CUSTOMER_QNA_SEQ.nextval,  #{cqtitle}, #{cqcontent}, SYSDATE, #{cqgroup}, #{cqstep}, #{cqindent}, 0, #{cid}, NULL)
+	</if>
+	
+	<!-- 관리자가 글을 쓸경우 -->
+	<if test="aid != null and aid != ''">
+		INSERT INTO CUSTOMER_QNA(CQCODE, CQTITLE, CQCONTENT, CQRDATE, CQGROUP, CQSTEP, CQINDENT, CQHIT, CID, AID)
+    		VALUES (CUSTOMER_QNA_SEQ.nextval,  #{cqtitle}, #{cqcontent}, SYSDATE, #{cqgroup}, #{cqstep}, #{cqindent}, 0, NULL, #{aid})
+	</if>
+	</insert>
+	
+	<!-- 글 삭제하기 -->
+	<delete id="deletCustomerQna" parameterType="Customer_qna">
+		DELETE FROM CUSTOMER_QNA WHERE CQCODE = #{cqcode}
+	</delete>
+
+</mapper>

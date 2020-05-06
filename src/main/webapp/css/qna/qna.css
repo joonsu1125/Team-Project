@@ -1,0 +1,43 @@
+@charset "UTF-8";
+#qna_list td{
+ word-break: break-all;
+	height: 40px;
+ border-bottom: 1px solid #cccccc;
+}
+#qna_list b{
+ color: red;
+}
+#qna_list table{
+	width: 1000px;
+	border-collapse: collapse;
+	margin: auto;
+}
+#qna_list .list_Menu{
+font-size: 12px;
+color: #808080;
+border-collapse: collapse;
+word-break: break-all;
+margin: 0;
+padding: 0;
+background: #fefdf4;
+}
+#qna_list .list_Wrap:hover{
+	cursor: pointer;
+}
+#qna_list .list_Wrap{
+font-size: 12px;
+color: #808080;
+border-collapse: collapse;
+word-break: break-all;
+margin: 0;
+padding: 0;
+}
+#qna_list .list_Wrap .left{
+	width: 500px;
+}
+#qna_list .btnwrite{
+padding: 0;
+text-align: center;
+margin: 10px auto;
+padding-top: 10px;
+}

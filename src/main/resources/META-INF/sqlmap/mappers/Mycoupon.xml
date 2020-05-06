@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mycoupon">
+	<resultMap type="Mycoupon" id="MycouponResult">
+		<result property="chnum"		column="chnum"	/>
+		<result property="cuid" 		column="cuid"	/>
+		<result property="cid" 			column="cid"	/>
+		<result property="cuname"		column="cuname"	/>
+		<result property="cusale"		column="cusale"	/>
+	</resultMap>
+	
+	<!-- 보유쿠폰 불러오기 -->
+	<select id="listMycoupon" parameterType="String" resultMap="MycouponResult">
+		SELECT C.*, CHNUM, CID FROM COUPON C, COUPON_HOLD H WHERE C.CUID=H.CUID AND CID=#{cid}
+	</select>
+	
+	<!-- 할인쿠폰 선택하기 -->
+	<select id="getMycoupon" parameterType="String" resultType="Mycoupon">
+		SELECT C.*, CHNUM, CID FROM COUPON C, COUPON_HOLD H WHERE CHNUM=#{chnum}
+	</select>
+	
+	<!-- 사용 쿠폰 제거하기 -->
+	<delete id="useMycoupon" parameterType="java.util.ArrayList" >
+		DELETE FROM COUPON_HOLD WHERE CHNUM IN
+		<foreach item="chnum" index="index" collection="array"
+     		 open="(" separator="," close=")">
+        		#{chnum}
+  		</foreach>
+	</delete>
+	
+	<!-- 쿠폰 지급하기 -->
+	<insert id="givecoupon" parameterType="Mycoupon">
+		INSERT INTO COUPON_HOLD VALUES (COUPON_HOLD_SEQ.NEXTVAL, #{cuid}, #{cid})
+	</insert>
+	
+	<select id="countCoupon" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM COUPON_HOLD WHERE CID=#{cid}
+	</select>
+</mapper>
+
+

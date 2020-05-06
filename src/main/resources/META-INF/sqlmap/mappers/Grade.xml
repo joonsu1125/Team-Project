@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Grade">
+	<resultMap type="Grade" id="GradeResult">
+		<result property="gcode"	column="gcode"	/>
+		<result property="grade"	column="grade"	/>
+		<result property="ghigh"	column="ghigh"	/>
+		<result property="glow"		column="glow"	/>
+		<result property="gpoint"	column="gpoint"	/>
+	</resultMap>
+	<select id="getListGrade" resultMap="GradeResult">
+		SELECT * FROM GRADE
+	</select>
+	
+</mapper>

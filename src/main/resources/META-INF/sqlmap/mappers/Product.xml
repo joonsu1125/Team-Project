@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Product">
+	<resultMap type="Product" id="ProductResult">
+		<result property="pcode" column="pcode" />
+		<result property="ptitle" column="ptitle" />
+		<result property="pcontent" column="pcontent" />
+		<result property="pimage1" column="pimage1" />
+		<result property="pimage2" column="pimage2" />
+		<result property="pimage3" column="pimage3" />
+		<result property="mid" column="mid" />
+	</resultMap>
+	<select id="getProductList" resultMap="ProductResult">
+		SELECT * FROM (SELECT ROWNUM RN ,A.* FROM
+		(SELECT P.*,MNAME,(SELECT COUNT(*) FROM FAVORITE F,PRODUCT P WHERE F.PCODE=P.PCODE)FAV FROM PRODUCT P, MARKET M
+		WHERE MNAME LIKE '%'||#{schword}||'%' OR PTITLE LIKE '%'||#{schword}||'%' AND P.MID = M.MID ORDER BY FAV DESC)A)
+		WHERE RN BETWEEN #{startrow} AND #{endrow}
+	</select>
+	<select id="totalproduct">
+		SELECT COUNT(*) FROM MARKET M, PRODUCT P WHERE MNAME
+		LIKE '%'||#{schword}||'%' OR PTITLE LIKE '%'||#{schword}||'%'
+	</select>
+	<select id="detailProduct" parameterType="String"  resultType="Product">
+		SELECT * FROM PRODUCT WHERE PCODE=#{pcode, jdbcType=VARCHAR}
+	</select>
+	<!-- 상품 리스트 PAGING처리 -->
+	<select id="productList" parameterType="Product" resultMap="ProductResult">
+		SELECT * FROM (SELECT ROWNUM RN, A.* FROM(SELECT * FROM PRODUCT ORDER BY PTITLE DESC) A)
+    		WHERE RN BETWEEN #{startrow} AND #{endrow}
+    </select>
+    <!-- 페이징 때 쓰려고 등록된 상품 개수 -->
+    <select id="cntProduct" resultType="int">
+    	SELECT COUNT(*) FROM PRODUCT
+    </select>
+    <!-- 상품등록 -->
+    <insert id="registerProduct" parameterType="Product_Product_option">
+    	INSERT INTO PRODUCT VALUES (PRODUCT_SEQ.NEXTVAL, #{ptitle}, #{pcontent}, #{pimage1}, #{pimage2}, #{pimage3}, #{mid})
+    </insert>
+    <!-- 마켓별 상품 리스트 -->
+    <select id="marketList" parameterType="Product" resultMap="ProductResult">
+    	SELECT * FROM (SELECT ROWNUM RN, A.* FROM(SELECT * FROM PRODUCT WHERE MID=#{mid} ORDER BY PTITLE DESC) A)
+    		WHERE RN BETWEEN #{startrow} AND #{endrow}
+    </select>
+    <!-- 상품 수정 -->
+    <update id="modifyProduct" parameterType="Product">
+    	UPDATE PRODUCT SET PTITLE = #{ptitle},
+                   PCONTENT = #{pcontent},
+                   PIMAGE1=#{pimage1},
+                   <if test="pimage2!=''">PIMAGE2=#{pimage2}</if>
+                   <if test="pimage3!=''">PIMAGE3=#{pimage3}</if>
+             WHERE PCODE=#{pcode}
+    </update>
+    <!-- 상품 삭제 -->
+    <delete id="deleteProduct" parameterType="String">
+    	DELETE FROM PRODUCT WHERE PCODE=#{pcode}
+    </delete>
+    <!--  마켓용 리스트 총갯수 -->
+    <select id="cntMarketMain" parameterType="Product" resultType="int">
+    	SELECT COUNT(*) FROM PRODUCT  WHERE MID=#{mid}
+    </select>
+    	
+</mapper>

@@ -1,0 +1,159 @@
+@charset "UTF-8";
+.coupon_window{
+	position: fixed;
+    width: 40%;
+    left: 50%;
+    margin-left: -20%;
+    height: 400px;
+    top: 50%;
+    margin-top: -250px;
+    overflow: auto;
+    background-color: white;
+    z-index: 900;
+    display: none;
+}
+.coupon_window::-webkit-scrollbar {
+	display: none;
+}
+#coupon_window_title{
+	line-height: 45px;
+    font-size: 1.5em;
+    color: #3a5485;
+    right: 38%;
+    position: relative;
+}
+.coupon_window img{
+	width: 20px;
+    position: fixed;
+    right: 30.3%;
+}
+.coupon_window hr{
+	margin-bottom: 20px;
+}
+.coupon_table{
+	width: 100%;
+}
+.coupon_table tr td{
+	height:30px;
+}
+.coupon_table tbody tr > td:nth-child(2){
+	text-align: left;
+}
+.coupon_table tr td:nth-child(1){width:10%;}
+.coupon_table tr td:nth-child(2){width:40%;}
+.coupon_table tr td:nth-child(3){width:15%;}
+.coupon_table tr td:nth-child(4){width:35%;}
+.btn_coupon_apply{
+	background: #3a5485;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 700;
+    width: 300px;
+    line-height: 20px;
+    border: 2px solid #3a5485;
+    border-radius: 10px;
+    padding: 22px 0 19px;
+    text-align: center;
+    margin: 10px;
+}
+#total_price{
+	line-height: 32px;
+}
+#bottom{
+	margin: 0 auto;
+    width: 700px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#bottom > div:nth-child(1){
+	height: 50px;
+    line-height: 50px;
+    width: 700px;
+    text-align: center;
+    background: #b9c9e6;
+    margin-top: 10px;
+    border: 1px solid #cecece;
+    border-radius: 10px;
+    font-size: 1.1em;
+}
+#bottom > div:nth-child(1) > #cpoint {
+	text-align: right;
+    height: 22px;
+    padding: 0 5px;
+    border: 1px solid #a3a4a6;
+    line-height: 190%;
+    width: 55px;
+    bottom: 2px;
+    position: relative;
+}
+#bottom > div:nth-child(2){
+	font-size: 1.1em;
+    padding: 5px 5px;
+	width: 690px;
+	font-weight: bold;
+}
+#bottom > div:nth-child(3){
+	width: 700px;
+    border-top: 2px solid black;
+}
+#bottom > div:nth-child(3) > table {
+	border: 1px solid #cecece;
+    width: 700px;
+}
+#bottom > div:nth-child(3) > table input[type=text]{
+	height: 22px;
+    padding: 0 5px;
+    border: 1px solid #a3a4a6;
+    line-height: 190%;
+}
+#addr_head{
+	height: 40px;
+    line-height: 40px;
+    background: #f7f7f7;
+    padding: 0 10px;
+    font-weight: bold;
+}
+#option_addr{
+	height: 22px;
+    padding: 0 5px;
+    border: 1px solid #a3a4a6;
+    line-height: 190%;
+    width: 82px;
+}
+#bottom > div:nth-child(3) > table > tbody > tr > th {
+	background-color: #f4f4f4;
+	border-bottom: 0px;
+}
+#bottom > div:nth-child(3) > table > tbody > tr:nth-child(1) > td > input[type=text]{
+	width: 100px;
+}
+#bottom > div:nth-child(3) > table > tbody > tr:nth-child(2) > td > input[type=text] {
+	width: 70px;
+}
+#sample4_postcode{
+	width: 70px;
+	background-color: #f0f0f0;
+}
+#sample4_roadAddress{
+	width: 530px;
+	background-color: #f0f0f0;
+}
+#bottom > div:nth-child(3) > table > tbody > tr:nth-child(5) > td > input[type=text]{
+	width: 530px;
+}
+#btns_pay{
+	text-align: center;
+}
+#btns_pay > button.btn2, #btns_pay > button.btn1{
+	    margin: 20px;
+}
+#mask {  
+  position:absolute;  
+  left:0;
+  top:0;
+  z-index:800;  
+  background-color:#000;  
+  display:none; 
+  opacity: 50%; 
+}

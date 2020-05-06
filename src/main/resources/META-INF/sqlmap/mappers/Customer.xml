@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Customer">
+	<resultMap type="Customer" id="CustomerResult">
+		<result property="cid" 			column="cid"		/>
+		<result property="cpw" 			column="cpw"		/>
+		<result property="cname" 		column="cname"		/>
+		<result property="csnsid" 		column="csnsid"		/>
+		<result property="cprovider" 	column="cprovider"	/>
+		<result property="addrcode" 	column="addrcode"	/>
+		<result property="cemail" 		column="cemail"		/>
+		<result property="ctel" 		column="ctel"		/>
+		<result property="crdate" 		column="crdate"		/>
+		<result property="cpoint" 		column="cpoint"		/>
+		<result property="gcode" 		column="gcode"		/>
+	</resultMap>
+
+ 	<!-- 고객정보 가져오기 -->
+<!-- 	<select id="getCustomer" parameterType="String" resultMap="CustomerResult">
+		SELECT * FROM CUSTOMER WHERE CID=#{cid}
+	</select> -->
+	<select id="getCustomer" parameterType="String" resultType="Customer">
+		SELECT * FROM CUSTOMER WHERE CID=#{cid}
+	</select>
+	
+	<!-- 회원가입시 아이디 중복 체크 -->
+	<select id="idConfirm" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM CUSTOMER WHERE CID=#{CID}
+	</select>
+	
+	<!-- 전체 회원 목록 가져오기 -->
+	<select id="totlaCustomer" resultMap="CustomerResult">
+		SELECT * FROM CUSTOMER
+	</select>
+	
+	<!-- SNS로 로그인시 해당 SNS명과 SNSID가 있는지 검색 -->
+	<select id="snsConfirm" parameterType="Customer" resultType="int">
+		SELECT COUNT(*) FROM CUSTOMER WHERE CPROVIDER = #{cprovider} AND CSNSID = #{csnsid}
+	</select>
+	
+	<!-- SNS로 로그인시 해당 SNS명과 SNSID가 있는지 검색 -->
+	<select id="snsIdConfirm" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM CUSTOMER WHERE CSNSID = #{csnsid}
+	</select>
+	
+	<select id="getSnsCustomer" parameterType="String" resultType="Customer">
+		SELECT * FROM CUSTOMER WHERE CSNSID= #{csnsid}
+	</select>
+	
+	<!-- 회원가입하기 -->
+	<insert id="registCustomer" parameterType="Customer">
+		INSERT INTO CUSTOMER VALUES
+			(#{cid}, #{cpw}, #{cname}, #{csnsid}, #{cprovider}, #{cid}, #{cemail}, #{ctel}, SYSDATE, 0,'1')
+	</insert>
+	
+	<!-- 회원 가입후 addrcode에 addlist의 addrcode 넣어주기 -->
+	<update id="updateAddrList" parameterType="Customer">
+		UPDATE CUSTOMER SET
+		    ADDRCODE = #{addrcode}
+		WHERE CID = #{cid}
+	</update>
+	
+	<!-- 회원정보 수정 -->
+	<update id="modifyCustomer" parameterType="Customer">
+		UPDATE CUSTOMER SET
+		    CPW = #{cpw},
+		    CNAME = #{cname},
+		    ADDRCODE = #{addrcode},
+		    CTEL = #{ctel}
+		    CEMAIL = #{cemail}
+		WHERE CID = #{cid}
+	</update>
+	
+	<!-- 회원주소코드 수정 -->
+	<update id="modifyCustomerAddrcode" parameterType="Customer">
+		UPDATE CUSTOMER SET
+		    ADDRCODE = #{addrcode}
+		WHERE CID = #{cid}
+	</update>
+	
+	<!-- 회원정보 수정시 / 회원가입시 이메일 중복 체크 -->
+	<select id="emailConfirm" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM CUSTOMER WHERE CEMAIL = #{cemail}
+	</select>
+
+	<!-- 회원 탈퇴 -->
+	<delete id="deleteCustomer" parameterType="String">
+		DELETE FROM CUSTOMER WHERE CID = #{cid}
+	</delete>
+	
+	<!-- 포인트적립 -->
+	<update id="upPoint" parameterType="String">
+		UPDATE CUSTOMER SET CPOINT = CPOINT + 
+			TRUNC((SELECT OSUM FROM SP_ORDER WHERE OCODE=(SELECT MAX(TO_NUMBER(OCODE)) FROM SP_ORDER))
+			*(SELECT GPOINT/100 FROM GRADE G, CUSTOMER C WHERE G.GCODE = C.GCODE AND CID=#{cid}),0)
+	</update>
+	
+	<!-- 포인트 사용 -->
+	<update id="usePoint" parameterType="Customer">
+		UPDATE CUSTOMER SET CPOINT = CPOINT - #{cpoint} WHERE CID=#{cid}
+	</update>
+	
+	<!-- 특정 고객등급 아이디 불러오기(쿠폰지급용) -->
+	<select id="getListCidByGrade" parameterType="String" resultMap="CustomerResult">
+		SELECT CID FROM CUSTOMER WHERE GCODE=#{gcode}
+	</select>
+</mapper>
+
+

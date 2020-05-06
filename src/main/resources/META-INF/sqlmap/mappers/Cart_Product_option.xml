@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Cart_Product_option">
+	<resultMap type="Cart_Product_option" id="Cart_Product_optionResult">
+		<result property="pocode" 		column="pocode"		/>
+		<result property="poname" 		column="poname"		/>
+		<result property="ponet" 		column="ponet"		/>
+		<result property="poprice" 		column="poprice"	/>
+		<result property="typecode" 	column="typecode"	/>
+		<result property="pcode" 		column="pcode"		/>
+		<result property="cartno" 		column="cartno"		/>
+		<result property="cid" 			column="cid"		/>
+		<result property="cartcount" 	column="cartcount"	/>
+		<result property="pimage" 		column="pimage"	/>
+	</resultMap>
+	
+	<!-- 카트 불러오기 -->
+	<select id="listCartByCid" parameterType="String" resultMap="Cart_Product_optionResult">
+		SELECT P.*, CARTCOUNT, CARTNO, (SELECT PIMAGE1 FROM PRODUCT PR, PRODUCT_OPTION PO WHERE PR.PCODE=PO.PCODE AND POCODE=C.POCODE) PIMAGE
+		 FROM CART C, PRODUCT_OPTION P WHERE C.POCODE=P.POCODE AND CID=#{cid}
+	</select>
+	
+	<!-- 장바구이에서 구입으로 넘어갈때 카트 불러오기 -->
+	<select id="listCartByCartno" parameterType="java.util.List" resultMap="Cart_Product_optionResult">
+		SELECT P.*, CARTCOUNT, CARTNO, (SELECT PIMAGE1 FROM PRODUCT PR, PRODUCT_OPTION PO WHERE PR.PCODE=PO.PCODE AND POCODE=C.POCODE) PIMAGE
+		 FROM CART C, PRODUCT_OPTION P WHERE C.POCODE=P.POCODE AND CARTNO IN 
+		<foreach item="cartno" index="index" collection="list"
+     		 open="(" separator="," close=")">
+        		#{cartno}
+  		</foreach>
+	</select>
+	<!-- 장바구니 가격 불러오기 -->
+	<select id="CartPrice" parameterType="String" resultMap="Cart_Product_optionResult">
+		SELECT CARTCOUNT,POPRICE FROM CART C, PRODUCT_OPTION P WHERE C.POCODE=P.POCODE AND CARTNO =#{cartno}
+	</select>
+</mapper>
+
+

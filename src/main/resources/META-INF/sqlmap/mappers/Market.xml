@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Market">
+	<resultMap type="Market" id="MarketResult">
+		<result property="mid"			column="mid"/>
+		<result property="mpw"			column="mpw"/>
+		<result property="mname"		column="mname"/>
+		<result property="mtel"			column="mtel"/>
+		<result property="mpost"		column="mpost"/>
+		<result property="maddr1"		column="maddr1"/>
+		<result property="maddr2"		column="maddr2"/>
+	</resultMap>
+	
+	<!-- 전체 마켓 목록 가져오기 -->
+	<select id="totalMarket" resultMap="MarketResult">
+		SELECT * FROM MARKET;
+	</select>
+	
+	<!-- 마켓가입시 아이디 중복 검색 -->
+	<select id="midConfirm" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM MARKET WHERE MID=#{mid}
+	</select>
+	
+	<!-- 로그인시 해당 마켓회원 가져오기 -->
+	<select id="getMarket" parameterType="String" resultType="Market">
+		SELECT * FROM MARKET WHERE MID=#{mid}
+	</select>
+
+	<!-- 마켓회원 가입하기 -->
+	<insert id="registMarket" parameterType="Market">
+		INSERT INTO MARKET VALUES
+			(#{mid},#{mpw},#{mname},#{mtel},#{mpost},#{maddr1},#{maddr2})
+	</insert>
+
+	<!-- 마켓 회원정보 수정 -->
+	<update id="modifyMarket" parameterType="Market">
+		UPDATE MARKET SET
+		    MPW = #{mpw},
+		    MNAME = #{mname},
+		    MTEL = #{mtel},
+		    MPOST = #{mpost},
+		    MADDR1 = #{maddr1},
+		    MADDR2 = #{maddr2}
+		WHERE MID = #{mid}
+	</update>
+
+	<!-- 마켓회원 탈퇴 -->
+	<delete id="deleteMarket" parameterType="String">
+		DELETE FROM MARKET WHERE MID = #{mid}
+	</delete>
+	
+	
+</mapper>

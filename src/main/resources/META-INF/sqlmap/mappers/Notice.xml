@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Notice">
+	<resultMap type="Notice" id="NoticeResult">
+		<result property="ncode" column="ncode" />
+		<result property="ntitle" column="ntitle" />
+		<result property="ncontent" column="ncontent" />
+		<result property="nrdate" column="nrdate" />
+		<result property="ngroup" column="ngroup" />
+		<result property="nstep" column="nstep" />
+		<result property="nindent" column="nindent" />
+		<result property="nhit" column="nhit" />
+		<result property="cid" column="cid" />
+		<result property="aid" column="aid" />
+	</resultMap>
+	<insert id="addNotice" parameterType="Notice">
+		INSERT INTO NOTICE
+		(NCODE,NTITLE,NCONTENT,NGROUP,NSTEP,NINDENT,NHIT)
+		VALUES (NOTICE_SEQ.NEXTVAL,#{ntitle},#{ncontent},NOTICE_SEQ.CURRVAL,#{nstep},#{nindent},#{nhit})
+	</insert>
+	<insert id="replyNotice" parameterType="Notice">
+		
+		<if test="aid==null and cid!=null">
+			INSERT INTO NOTICE
+			(NCODE,NTITLE,NCONTENT,NGROUP,NSTEP,NINDENT,NHIT,CID)
+			VALUES
+			(NOTICE_SEQ.NEXTVAL,#{ntitle},#{ncontent},#{ngroup},#{nstep}+1,#{nindent}+1,#{nhit},#{cid, jdbcType=VARCHAR})
+		</if>
+		<if test="cid==null and aid!=null">
+			INSERT INTO NOTICE
+			(NCODE,NTITLE,NCONTENT,NGROUP,NSTEP,NINDENT,NHIT,AID)
+			VALUES
+			(NOTICE_SEQ.NEXTVAL,#{ntitle},#{ncontent},#{ngroup},#{nstep}+1,#{nindent}+1,#{nhit},#{aid, jdbcType=VARCHAR})
+		</if>
+	</insert>
+	<update id="noticeHitUp" parameterType="String">
+		UPDATE NOTICE SET
+		NHIT=NHIT+1 WHERE NCODE=#{ncode}
+	</update>
+	<select id="getNotice" parameterType="String" resultType="Notice">
+		SELECT * FROM NOTICE WHERE NCODE=#{ncode}
+	</select>
+	<update id="indentNotice">
+		<![CDATA[
+		UPDATE NOTICE SET NSTEP=NSTEP+1 WHERE
+		NGROUP=#{ngroup} AND NSTEP>#{nstep}]]>
+		
+	</update>
+	<update id="modifyNotice" parameterType="Notice">
+		UPDATE NOTICE SET NTITLE=#{ntitle},          
+		                  NCONTENT=#{ncontent}
+    		WHERE NCODE=#{ncode}
+	</update>
+	<delete id="deleteNotice" parameterType="String">
+		DELETE FROM NOTICE WHERE
+		NCODE=#{ncode}
+	</delete>
+	<select id="noticeList" parameterType="Notice"
+		resultMap="NoticeResult">
+		SELECT * FROM
+		(SELECT ROWNUM RN, A.* FROM
+		(SELECT * FROM NOTICE ORDER BY NGROUP DESC ,NSTEP)A)
+		WHERE RN BETWEEN #{startrow} AND #{endrow}
+	</select>
+	<select id="totalNotice" resultType="int">
+		SELECT COUNT(*) FROM NOTICE
+	</select>
+</mapper>

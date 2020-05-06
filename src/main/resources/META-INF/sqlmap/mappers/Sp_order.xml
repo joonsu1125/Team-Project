@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Sp_order">
+	<resultMap type="Sp_order" id="Sp_orderResult">
+		<result property="ocode"	column="ocode"		/>
+		<result property="oname"	column="oname"		/>
+		<result property="otel"		column="otel"		/>
+		<result property="opost"	column="opost"		/>
+		<result property="oaddr1"	column="oaddr1"		/>
+		<result property="oaddr2"	column="oaddr2"		/>
+		<result property="osum"		column="osum"		/>
+		<result property="otime"	column="otime"		/>
+		<result property="odelivery" column="odelivery"	/>
+		<result property="ostatus"	column="ostatus"	/>
+		<result property="cid"		column="cid"		/>
+	</resultMap>
+	<insert id="insertSp_order" parameterType="Sp_order">
+		INSERT INTO SP_ORDER VALUES(SP_ORDER_SEQ.nextval,
+		#{oname}, #{otel}, #{opost}, #{oaddr1}, #{oaddr2}, 
+		#{osum}, SYSDATE, '발송준비', '주문완료', #{cid})
+	</insert>
+	
+	<update id="updateSp_order" parameterType="String">
+		UPDATE SP_ORDER SET OSTATUS = '구매확정' WHERE OCODE=#{ocode}
+	</update>
+</mapper>

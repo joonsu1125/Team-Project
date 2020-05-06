@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Product_type">
+	<resultMap type="Product_type" id="Product_typeResult">
+		<result property="typecode" 	column="typecode" 		/>
+		<result property="typecoderef" 	column="typecoderef" 	/>
+		<result property="producttype" 	column="producttype" 	/>
+	</resultMap>
+	<select id="getListProduct_type" resultMap="Product_typeResult">
+		SELECT * FROM PRODUCT_TYPE WHERE TYPECODEREF!=0
+	</select>
+</mapper>

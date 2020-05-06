@@ -1,0 +1,162 @@
+@charset "UTF-8";
+body{
+	font-size: 12px;
+}
+#cart_head{
+	position: relative;
+	width: 1000px;
+	height: 75px;
+	margin: 0 auto;
+}
+#cart_head_left{
+	margin-left: 20px;
+	width: 50%;
+    height: 75px;
+    line-height: 75px;
+    font-size: 2.3em;
+    font-weight: bold;
+}
+#cart_head_right{
+	top: 60%;
+    right: 20px;
+    position: absolute;
+    width: 50%;
+}
+#cart_head_right li{
+	float: right;
+	margin: 0 2px;
+}
+#cart_head_right li:nth-child(2n){
+	position: relative;
+    top: -20px;
+    font-size: 2.5em;
+    color: #3a5485;
+}
+#cart_head_right li:nth-child(2n-1){
+	color:#989898;
+}
+#cart_head_right #status_now{
+	color: #3a5485;
+    font-weight: bold;
+    font-size: 1.5em;
+    position: relative;
+    top: -7px;
+}
+.list td{
+	position: relative;
+	height:150px;
+	border-bottom:1px solid #e5e5e5;
+}
+.list td input[type=checkbox] {
+	vertical-align: 55px;
+    margin: 20px;
+}
+.list td input[type=text] {
+	text-align:center;
+	width: 40px;
+}
+.list td:nth-child(1) img{width: 130px;}
+.list td img:hover{cursor: pointer;}
+.list td .btn_count_minus, .list td .btn_count_plus{width: 22px;}
+.list td .btn_count_minus, .list td .btn_count_plus:hover{cursor: pointer;}
+table tr th{
+	border-bottom:1px solid #e5e5e5;
+	height: 40px;
+	line-height: 40px;
+}
+.list .list_left{
+	width: 190px;
+}
+.list .list_right{
+	width: 400px;
+    position: absolute;
+    top: 20px;
+    left: 190px;
+}
+.list .list_right a:hover{
+	text-decoration: underline;	
+}
+.list .list_right hr{
+	margin: 10px 0;
+	border: 1px solid #e5e5e5;
+}
+.list .list_right span{
+	color:#969494;
+}
+form>table>tbody>tr>th #wholecheck{
+	position: relative;
+    left: -34%;
+    color: #8c8b8b;
+}
+form>table>tbody>tr>th:nth-of-type(1), form>table>tbody>tr>td:nth-of-type(1) {
+	width:636px;
+}
+form>table>tbody>tr>th:nth-of-type(2), form>table>tbody>tr>td:nth-of-type(2) {
+	width:60px;
+	border-left: 1px solid #e5e5e5;
+	text-align: center;
+}
+form>table>tbody>tr>th:nth-of-type(n+2), form>table>tbody>tr>td:nth-of-type(n+2) {
+	width:100px;
+	border-left: 1px solid #e5e5e5;
+	text-align: center;
+}
+.list>td:nth-of-type(5) a{
+	text-align: center;
+    display: inline-block;
+    border-radius: 5px;
+    font-size: 0.8em;
+    letter-spacing: -1px;
+    width: 65px;
+    vertical-align: middle;
+    height: 24px;
+    line-height: 24px;
+    margin: 5px 0 0 -3px;	
+}
+.list>td:nth-of-type(5) a:nth-of-type(1) {
+	border: 1px solid #3a5485;
+    background-color: #3a5485;
+    color: white;
+}
+.list>td:nth-of-type(5) a:nth-of-type(2) {
+	border: 1px solid #3a5485;
+    background-color: white;
+    color: #3a5485;
+}
+
+.price{
+	border-bottom: 1px solid #ddd;
+	position: relative;
+	padding: 20px 35px 16px 0;
+	background: #f7f7f7;
+	font-size: 12px;
+	line-height: 29px;
+	text-align: right;
+}
+.price td{
+	height: 50px;
+    font-size: 15px;
+    padding: 0 15px;
+}
+#total_price{
+	text-align: center;
+    height: 70px;
+    line-height: 70px;
+    margin: 10px 150px;
+    border-radius: 10px;
+    border: 4px solid #9e9e9e;
+}
+#total_price b{
+	font-size: 1.3em;
+}
+#total_price b:nth-of-type(3) {
+	color: #ea0000;
+}
+#btns_order{
+	text-align: center;
+    margin: 10px;
+}
+#btns_order .btn1, #btns_order .btn2{
+	font-size: 14px;
+	margin: 10px;
+} 

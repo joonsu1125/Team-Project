@@ -1,0 +1,42 @@
+@charset "UTF-8";
+td {
+	border-top:1px solid #a0a0a0;
+	border-right: 1px solid #a0a0a0;
+}
+td:last-child{border-right: 1px solid white;}
+.noborder{border-top:1px solid white;}
+
+#content table {
+	width:1000px;
+	border-top: 2px solid black;
+	border-bottom: 2px solid black;
+	margin: 30px auto;
+}
+
+#content td, #content th {
+	text-align: center;
+	padding: 5px;
+	background-color: white;
+}
+
+#content caption {
+	font-size: 1.3em;
+	text-align: center;
+}
+
+#content h2 {
+	text-align: center;
+	color: red;
+}
+
+#content div {
+	text-align: center;
+}
+input[type="button"]{
+	outline:0;
+	padding:2px;
+}
+input[type="button"]:nth-child(2){
+	background-color: #716f6a;
+	color:white;
+}

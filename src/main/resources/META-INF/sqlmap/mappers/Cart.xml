@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Cart">
+	<resultMap type="Cart" id="CartResult">
+		<result property="cartno" 		column="cartno"		/>
+		<result property="cid" 			column="cid"		/>
+		<result property="pocode" 		column="pocode"		/>
+		<result property="cartcount" 	column="cartcount"	/>
+	</resultMap>
+	
+ 	<!-- 카트에 넣기 -->
+	<insert id="insertCart" parameterType="Cart">
+		INSERT INTO CART VALUES(CART_SEQ.nextval,#{cid},#{pocode},#{cartcount})
+	</insert>
+	 <!--  카트에서 빼기 -->
+	<delete id="deleteCart" parameterType="String">
+		DELETE FROM CART WHERE CARTNO=#{cartno}
+	</delete>
+	<!-- 카트에서 수량 변경 -->
+	<update id="updateCart" parameterType="Cart">
+		UPDATE CART SET CARTCOUNT=#{cartcount} WHERE CARTNO = #{cartno}
+	</update>
+	<!-- 구매후 카트에서 제거 -->
+	<delete id="buyCart" parameterType="java.util.ArrayList">
+		DELETE FROM CART WHERE CARTNO IN
+		<foreach item="cartno" index="index" collection="array"
+     		 open="(" separator="," close=")">
+        		#{cartno}
+  		</foreach>
+	</delete>
+	<!-- 바로구매시 넣은 CARTNO바로 가져오기-->
+	<select id="getArrayCartno" parameterType="int" resultMap="CartResult">
+		SELECT CARTNO FROM (SELECT ROWNUM RN, A.* FROM 
+		(SELECT CARTNO FROM CART ORDER BY TO_NUMBER(CARTNO) DESC) A) 
+		WHERE RN BETWEEN 1 AND #{result}
+	</select>
+	<!-- 카트 갯수 -->
+	<select id="numberCart" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM CART WHERE CID=#{cid}
+	</select>
+</mapper>
+
+

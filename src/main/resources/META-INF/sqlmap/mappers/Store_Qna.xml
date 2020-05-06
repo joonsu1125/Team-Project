@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Store_qna">
+	<resultMap type="Store_qna" id="Store_qna_Result">
+		<result property="sqcode"			column="sqcode"/>
+		<result property="sqtitle"			column="sqtitle"/>
+		<result property="sqcontent"		column="sqcontent"/>
+		<result property="sqrdate"			column="sqrdate"/>
+		<result property="sqgroup"			column="sqgroup"/>
+		<result property="sqstep"			column="sqstep"/>
+		<result property="sqindent"			column="sqindent"/>
+		<result property="sqhit"			column="sqhit"/>
+		<result property="mid"				column="mid"/>
+		<result property="cid"				column="cid"/>
+		<result property="mname"			column="mname"/>
+		<result property="cname"			column="cname"/>
+	</resultMap>
+	
+	<!-- 전체 글 갯수 가져오기 -->
+	<select id="totalStoreQna" resultType="int">
+		SELECT COUNT(*) FROM STORE_QNA
+	</select>
+	
+	<!-- 글 목록 가져오기 (startrow, endrow) -->
+	<!-- <select id="storeQnaList" parameterType="Store_qna" resultMap="Store_qna_Result" >
+		SELECT * FROM (SELECT ROWNUM RN, A.* 
+    		FROM (SELECT * FROM STORE_QNA ORDER BY SQGROUP DESC, SQSTEP) A)
+		WHERE RN BETWEEN #{startrow} AND #{endrow}
+	</select> -->
+	<select id="storeQnaList" parameterType="Store_qna" resultMap="Store_qna_Result" >
+		SELECT * FROM (SELECT ROWNUM RN, A.* 
+    		FROM (SELECT Q.*, C.CNAME, M.MNAME FROM STORE_QNA Q 
+    				LEFT OUTER JOIN CUSTOMER C ON ( Q.CID = C.CID) 
+    				LEFT OUTER JOIN MARKET M ON ( Q.MID = M.MID) 
+    				ORDER BY SQGROUP DESC, SQSTEP) A)
+		WHERE RN BETWEEN #{startrow} AND #{endrow}
+	</select>
+	
+	<!-- 상세글 보기 (sqcode로 dto 가져오기) -->
+	<!-- <select id="getStoreQnaDetail" parameterType="String" resultType="Store_qna">
+		SELECT * FROM STORE_QNA WHERE SQCODE =  #{sqcode}
+	</select> -->
+	<select id="getStoreQnaDetail" parameterType="String" resultType="Store_qna">
+		SELECT Q.*, C.CNAME, M.MNAME FROM STORE_QNA Q
+      		LEFT OUTER JOIN CUSTOMER C
+        		ON ( Q.CID = C.CID)
+        	LEFT OUTER JOIN MARKET M
+        		ON ( Q.MID = M.MID)
+        WHERE SQCODE =  #{sqcode}
+	</select>
+	
+	<!-- 원글 쓰기 -->
+	<insert id="writeStoreQna" parameterType="Store_qna">
+	<!-- 마켓이 글을 쓸경우 -->
+	<if test="mid != null and mid != ''">
+		INSERT INTO STORE_QNA(SQCODE, SQTITLE, SQCONTENT, SQRDATE, SQGROUP, SQSTEP, SQINDENT, SQHIT, MID, CID)
+	    	VALUES (STORE_QNA_SEQ.nextval, #{sqtitle}, #{sqcontent}, SYSDATE, STORE_QNA_SEQ.CURRVAL, 0, 0, 0, #{mid}, null)	
+	</if>
+	<!-- 고객이 글을 쓸경우 -->
+	<if test="cid != null and cid != ''">
+		INSERT INTO STORE_QNA(SQCODE, SQTITLE, SQCONTENT, SQRDATE, SQGROUP, SQSTEP, SQINDENT, SQHIT, MID, CID)
+	    	VALUES (STORE_QNA_SEQ.nextval, #{sqtitle}, #{sqcontent}, SYSDATE, STORE_QNA_SEQ.CURRVAL, 0, 0, 0, null, #{cid})
+	</if>
+	</insert>
+	
+	<!-- 글 수정하기 -->
+	<update id="modifyStoreQna" parameterType="Store_qna">
+	UPDATE STORE_QNA SET
+	SQTITLE = #{sqtitle},
+	SQCONTENT = #{sqcontent},
+	SQRDATE = SYSDATE
+	WHERE SQCODE = #{sqcode}
+	</update>
+	
+	<!-- 조회수 올리기 -->
+	<update id="hitupStoreQna" parameterType="String">
+		UPDATE STORE_QNA SET SQHIT = SQHIT + 1
+			WHERE SQCODE = #{sqcode}
+	</update>
+	
+	<!-- 답변글 달기전 stepA -->
+	<update id="replyStepAStoreQna" parameterType="Store_qna">
+		UPDATE STORE_QNA SET SQSTEP = SQSTEP +1 WHERE SQGROUP = #{sqgroup} AND SQSTEP > 0
+	</update>
+	
+	<!-- 답변글 달기 -->
+	<insert id="replyStoreQna" parameterType="Store_qna">
+	<!-- 마켓이 글을 쓸경우 -->
+	<if test="mid != null and mid != ''">
+		INSERT INTO STORE_QNA(SQCODE, SQTITLE, SQCONTENT, SQRDATE, SQGROUP, SQSTEP, SQINDENT, SQHIT, MID, CID)
+    		VALUES (STORE_QNA_SEQ.nextval,  #{sqtitle}, #{sqcontent}, SYSDATE, #{sqgroup}, #{sqstep}, #{sqindent}, 0, #{mid}, NULL)
+	</if>
+	
+	<!-- 고객이 글을 쓸경우 -->
+	<if test="cid != null and cid != ''">
+		INSERT INTO STORE_QNA(SQCODE, SQTITLE, SQCONTENT, SQRDATE, SQGROUP, SQSTEP, SQINDENT, SQHIT, MID, CID)
+    		VALUES (STORE_QNA_SEQ.nextval,  #{sqtitle}, #{sqcontent}, SYSDATE, #{sqgroup}, #{sqstep}, #{sqindent}, 0, NULL, #{cid})
+	</if>
+	</insert>
+	
+	<!-- 글 삭제하기 -->
+	<delete id="deletStoreQna" parameterType="Store_qna">
+		DELETE FROM STORE_QNA WHERE SQCODE = #{sqcode}
+	</delete>
+</mapper>

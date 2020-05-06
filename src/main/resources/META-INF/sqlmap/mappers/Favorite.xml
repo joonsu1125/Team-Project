@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Favorite">
+	<resultMap type="Favorite" id="FavoriteResult">
+		<result property="fcode" column="fcode"/>
+		<result property="cid" column="cid"/>
+		<result property="pcode" column="pcode"/>
+	</resultMap>
+	<select id="checkFavorite" parameterType="Favorite" resultType="int">
+		SELECT COUNT(*) FROM FAVORITE WHERE PCODE=#{pcode} AND CID=#{cid}
+	</select>
+	<insert id="insertFavorite" parameterType="Favorite">
+		INSERT INTO FAVORITE VALUES (FAVORITE_SEQ.NEXTVAL,#{cid},#{pcode})
+	</insert>
+	<delete id="deleteFavorite" parameterType="Favorite">
+		DELETE FROM FAVORITE WHERE PCODE=#{pcode} AND CID=#{cid}
+	</delete>
+</mapper>

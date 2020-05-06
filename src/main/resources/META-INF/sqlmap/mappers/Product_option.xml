@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Product_option">
+	<resultMap type="Product_option" id="Product_optionResult">
+		<result property="pocode" 	column="pocode" 	/>
+		<result property="poname" 	column="poname" 	/>
+		<result property="ponet" 	column="ponet" 		/>
+		<result property="postock" 	column="postock" 	/>
+		<result property="poprice" 	column="poprice" 	/>
+		<result property="typecode" column="typecode" 	/>
+		<result property="pcode" 	column="pcode" 		/>
+	</resultMap>
+	<select id="listForCart" parameterType="String" resultMap="Product_optionResult">
+		SELECT * FROM PRODUCT_OPTION WHERE PCODE=#{pcode}
+	</select>
+	<!-- 메인 상품 속 리스트 -->
+	<select id="product_optionList" parameterType="Product_option" resultMap="Product_optionResult">
+		SELECT O.*, PRODUCTTYPE FROM PRODUCT_OPTION O, PRODUCT_TYPE T WHERE O.TYPECODE=T.TYPECODE
+	</select>
+    <!-- 등록 옵션 번호로 옵션 상품가져오기 -->
+    <select id="getProduct_option" parameterType="String" resultType="Product_option">
+    	SELECT * FROM PRODUCT_OPTION WHERE POCODE=#{POCODE};
+    </select>
+	<!-- 메인 상품 속 옵션상품 등록  -->
+    <insert id="registerProduct_option" parameterType="Product_option">
+    	INSERT INTO PRODUCT_OPTION (POCODE, PONAME, PONET, POPRICE, POSTOCK, TYPECODE, PCODE)
+    		VALUES(PRODUCT_OPTION_SEQ.nextval,#{poname},#{ponet},#{poprice},#{postock},#{typecode},(SELECT MAX(TO_NUMBER(PCODE)) FROM PRODUCT))
+    </insert>
+</mapper>

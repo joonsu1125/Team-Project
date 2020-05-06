@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Product_qna">
+	<resultMap type="Product_qna" id="Product_qnaResult">
+		<result property="pqcode" column="pqcode" />
+		<result property="pqtitle" column="pqtitle" />
+		<result property="pqcontent" column="pqcontent" />
+		<result property="pqanswer" column="pqanswer" />
+		<result property="pqsecret" column="pqsecret" />
+		<result property="pqcomplete" column="pqcomplete" />
+		<result property="pqdate" column="pqdate" />
+		<result property="pcode" column="pcode" />
+		<result property="cid" column="cid" />
+	</resultMap>
+	<insert id="writeQna" parameterType="Product_qna">
+		INSERT INTO PRODUCT_QNA
+		(PQCODE,PQTITLE,PQCONTENT,PQSECRET,PQCOMPLETE,PCODE,CID)
+		VALUES(PRODUCT_QNA_SEQ.nextval,#{pqtitle},#{pqcontent},#{pqsecret},0,#{pcode},#{cid})
+	</insert>
+	<update id="replyQna" parameterType="Product_qna">
+		UPDATE PRODUCT_QNA SET
+		PQCOMPLETE=1,PQANSWER=#{pqanswer} WHERE PQCODE=#{pqcode}
+	</update>
+	<update id="modifyQna" parameterType="Product_qna">
+		UPDATE PRODUCT_QNA SET
+		PQTITLE=#{pqtitle},
+		PQCONTENT=#{pqcontent},
+		PQANSWER=null,
+		PQSECRET=#{pqsecret}
+		WHERE PQCODE=#{pqcode}
+	</update>
+	<select id="productQnaList" parameterType="Product_qna" resultMap="Product_qnaResult">
+		SELECT * FROM (SELECT
+		ROWNUM RN, A.* FROM
+		(SELECT * FROM PRODUCT_QNA WHERE PCODE=#{pcode} ORDER BY
+		PQDATE DESC)A)
+		WHERE RN
+		BETWEEN #{startrow} AND #{endrow}
+	</select>
+	<delete id="deleteQna" parameterType="String">
+		DELETE FROM PRODUCT_QNA WHERE PQCODE=#{pqcode}
+	</delete>
+	<select id="getQna" resultType="Product_qna"><!-- parameterType="String" --> 
+		SELECT * FROM PRODUCT_QNA WHERE PQCODE=#{pqcode}
+	</select>
+	<select id="qnaCnt" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM PRODUCT_QNA WHERE PCODE=#{pcode}
+	</select>
+	<select id="unansweredQnaList" parameterType="Product" resultMap="Product_qnaResult">
+		SELECT * FROM (SELECT ROWNUM RN, A.* FROM
+		(SELECT * FROM PRODUCT_QNA Q WHERE PCODE IN (SELECT PCODE FROM PRODUCT P WHERE MID=#{mid}) AND PQCOMPLETE='0'
+            ORDER BY PQDATE DESC)A)
+            WHERE RN BETWEEN #{startrow} AND #{endrow}
+	</select>
+	<select id="cntUnansweredQnaList" parameterType="Product" resultType="int" >
+		SELECT COUNT(*) FROM PRODUCT_QNA WHERE PCODE IN 
+			(SELECT PCODE FROM PRODUCT P WHERE MID=#{mid} ) 
+			AND PQCOMPLETE='0'
+	</select>
+</mapper> 

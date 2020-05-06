@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Addrlist">
+	<resultMap type="Addrlist" id="AddrlistResult">
+		<result property="addrcode"	column="addrcode"	/>
+		<result property="addrname"	column="addrname"	/>
+		<result property="cpost"	column="cpost"		/>
+		<result property="caddr1"	column="caddr1"		/>
+		<result property="caddr2"	column="caddr2"		/>
+		<result property="cid"		column="cid"		/>
+	</resultMap>
+	
+	<!-- 주소록 불러오기 -->
+	<select id="listAddrlist" parameterType="String" resultMap="AddrlistResult">
+		SELECT * FROM ADDRLIST WHERE CID=#{cid}
+	</select>
+	
+	<!-- addrcode로 주소 가져오기 -->
+	<select id="getAddrcode" parameterType="String" resultMap="AddrlistResult">
+		SELECT * FROM ADDRLIST WHERE ADDRCODE=#{addrcode}
+	</select>
+	
+	<!-- 해당 회원 등록된 주소록 숫자 불러오기 -->
+	<select id="cntAddrlist" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM ADDRLIST WHERE CID=#{cid}
+	</select>
+	
+	<!-- 회원 주소 등록하기 (회원가입시) -->
+	<insert id="firstAddrlist" parameterType="Addrlist">
+		INSERT INTO ADDRLIST VALUES(ADDRLIST_SEQ.nextval, ADDRLIST_SEQ.CURRVAL, #{cpost}, #{caddr1}, #{caddr2}, #{cid})
+	</insert>
+	
+	<!-- 회원가입시 ADDRCODE가져오기 -->
+	<select id="getFirstAddrCode" resultType="String">
+		SELECT TO_CHAR(MAX(TO_NUMBER(ADDRCODE))) FROM ADDRLIST
+	</select>
+
+	<!-- 회원 주소 등록하기 (주소 추가 할때) -->
+	<insert id="registAddrlist" parameterType="Addrlist">
+		INSERT INTO ADDRLIST VALUES(ADDRLIST_SEQ.nextval, #{addrname}, #{cpost}, #{caddr1}, #{caddr2}, #{cid})
+	</insert>
+	
+	<!-- 회원 주소 수정 -->
+	<update id="modifyAddrlist" parameterType="Addrlist">
+		UPDATE ADDRLIST SET
+		    ADDRNAME = #{addrname},
+		    CPOST = #{cpost},
+		    CADDR1 = #{caddr1},
+		    CADDR2 = #{caddr2}
+		WHERE ADDRCODE = #{addrcode}
+	</update>
+	
+	<!-- 회원주소 삭제 -->
+	<delete id="deleteAddrlist" parameterType="String">
+		DELETE FROM ADDRLIST WHERE ADDRCODE = #{addrcode}
+	</delete>
+	
+</mapper>
